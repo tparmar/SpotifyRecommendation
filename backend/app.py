@@ -51,6 +51,15 @@ recommend_playlist_expect = api.model("Recommend_Playlist", {
     'Playlist_id': fields.String(required=True, description="The id of the playlist")
 })
 
+get_song_expect = api.model('Get_Artist', {
+    'Artist_Name': fields.String(required=True, description="Name of the Artist")
+})
+
+get_audio_features_expect = api.model('Get_Audio_Features', {
+    'Song_id': fields.String(required=True, description="Song Id")
+})
+
+
 @ns_get_song.route('/')
 class GetSong(Resource):
     @ns_get_song.expect(get_song_expect)
@@ -76,3 +85,27 @@ class RecommendPlaylist(Resource):
         playlist_id = request.json["Playlist_id"]
         result = generate_playlist(token, playlist_id)
         return result
+
+@ns_get_artist.route('/')
+class GetArtist(Resource):
+    @ns_get_artist.expect(get_song_expect)
+    def post(self):
+        artist_name = request.json["Artist_Name"]
+        result = search_for_artist(token, artist_name)
+        return result
+    
+@ns_get_songs_playlist.route('/')
+class getSongsPlaylist(Resource):
+    @ns_get_songs_playlist.expect(recommend_playlist_expect)
+    def post(self):
+        playlist_id = request.json["Playlist_id"]
+        result = get_songs_from_playlist(token, playlist_id)
+        return result
+
+@ns_get_audio_features.route('/')
+class getAudioFeatures(Resource):
+    @ns_get_audio_features.expect(get_audio_features_expect)
+    def post(self):
+        song_id = request.json["Song_id"]
+        results = getAudioFeatures(token, song_id)
+        return results
