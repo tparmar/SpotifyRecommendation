@@ -142,15 +142,11 @@ def recommendSongs(token, track_name, num_recommended):
     if getSongInfo(token, track_name)["name"] not in new_df["name"].values:
         song_df = getSongInfo(token, track_name)
         new_df.loc[-1] = song_df
-        #print("hello")
-
-    
     scaler = MinMaxScaler()
     scaled_df = new_df
     scaled_df[numerical_features] = scaler.fit_transform(new_df[numerical_features])
     
     track_index = scaled_df.index[scaled_df["name"] == getSongInfo(token, track_name)["name"]]
-
 
     scores = cosine_similarity(scaled_df.loc[track_index][numerical_features], scaled_df[numerical_features])
 
@@ -159,7 +155,7 @@ def recommendSongs(token, track_name, num_recommended):
     # Get the names of the most similar songs based on content-based filtering
     content_based_recommendations = scaled_df.iloc[similar_song_indices][["name", "artists"]]
 
-    return content_based_recommendations
+    return (content_based_recommendations.to_json())
 
 #generate playlist given another playlist
 def generate_playlist(token, playlist_id):
@@ -179,4 +175,4 @@ def generate_playlist(token, playlist_id):
         current_song_df = tracks[i]
         list_recommended_songs.append(recommendSongs(token, current_song_df.iloc[0]["name"], 1))
 
-    return list_recommended_songs
+    return str(list_recommended_songs)

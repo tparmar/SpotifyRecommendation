@@ -44,7 +44,11 @@ get_song_expect = api.model('Get_Song', {
 
 recommend_song_expect = api.model('Recommend_Song', {
     'Song Name': fields.String(required=True, description='Song Name'),
-    'Recommendations:': fields.Integer(required=True, description="Number of recommendations")
+    'Recommendations': fields.Integer(required=True, description="Number of recommendations")
+})
+
+recommend_playlist_expect = api.model("Recommend_Playlist", {
+    'Playlist_id': fields.String(required=True, description="The id of the playlist")
 })
 
 @ns_get_song.route('/')
@@ -59,8 +63,16 @@ class GetSong(Resource):
 class RecommendSong(Resource):
     @ns_recommend_song.expect(recommend_song_expect)
     def post(self):
-        print(request.json)
-        song_name = request.json["Song Name"]
-        num_rec = request.json["Recommendations"]
+        inputs = request.json
+        num_rec = int(inputs["Recommendations"])
+        song_name = str(inputs["Song Name"])
         result = recommendSongs(token, song_name, num_rec)
+        return result
+    
+@ns_recommend_playlist.route('/')
+class RecommendPlaylist(Resource):
+    @ns_recommend_playlist.expect(recommend_playlist_expect)
+    def post(self):
+        playlist_id = request.json["Playlist_id"]
+        result = generate_playlist(token, playlist_id)
         return result
