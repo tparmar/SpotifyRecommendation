@@ -1,15 +1,24 @@
+from http.server import SimpleHTTPRequestHandler
 from flask import Flask, render_template, request
 from flask_restx import fields
 from flask_cors import CORS
 from flask_restx import Resource, Api
 from SpotifyRec import *
+import http.server
 
 #export FLASK_APP=app.py
 #export FLASK_ENV=development
 
+class HTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.send_header('Access-Control-Allow-Origin', '*')
+        http.server.SimpleHTTPRequestHandler.end_headers(self)
+
+
+
 app = Flask(__name__)
 api = Api(app, title="Spotify Recommendation System", description="Api to recommend songs from a given playlist or song")
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/*": {"origin": "*"}})
 
 numerical_features = ['valence', 'acousticness', 'danceability', 'energy', 'explicit', 'instrumentalness', 'liveness', 'loudness', 'mode', 'popularity', 'speechiness', 'tempo']
 
@@ -18,6 +27,8 @@ client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
 numerical_features = ['valence', 'acousticness', 'danceability', 'energy', 'explicit', 'instrumentalness', 'liveness', 'loudness', 'mode', 'popularity', 'speechiness', 'tempo']
+
+
 
 df = pd.read_csv("ml/datasets/data.csv")
 df = df.drop_duplicates('id')
@@ -37,6 +48,8 @@ ns_get_songs_playlist = api.namespace('get-songs-playlist', description="Get all
 
 ns_get_audio_features = api.namespace('get-audio-features', description="Get audio features given song id")
 
+ns_get_song_id = api.namespace('get-song-id', description="Get the song info from song id")
+
 
 get_song_expect = api.model('Get_Song', {
     'Song Name': fields.String(required=True, description='Song Name')
@@ -51,7 +64,7 @@ recommend_playlist_expect = api.model("Recommend_Playlist", {
     'Playlist_id': fields.String(required=True, description="The id of the playlist")
 })
 
-get_song_expect = api.model('Get_Artist', {
+get_artist_expect = api.model('Get_Artist', {
     'Artist_Name': fields.String(required=True, description="Name of the Artist")
 })
 
@@ -73,9 +86,11 @@ class RecommendSong(Resource):
     @ns_recommend_song.expect(recommend_song_expect)
     def post(self):
         inputs = request.json
+        print(inputs)
         num_rec = int(inputs["Recommendations"])
         song_name = str(inputs["Song Name"])
         result = recommendSongs(token, song_name, num_rec)
+        print(result)
         return result
     
 @ns_recommend_playlist.route('/')
@@ -88,7 +103,7 @@ class RecommendPlaylist(Resource):
 
 @ns_get_artist.route('/')
 class GetArtist(Resource):
-    @ns_get_artist.expect(get_song_expect)
+    @ns_get_artist.expect(get_artist_expect)
     def post(self):
         artist_name = request.json["Artist_Name"]
         result = search_for_artist(token, artist_name)
@@ -108,4 +123,12 @@ class getAudioFeatures(Resource):
     def post(self):
         song_id = request.json["Song_id"]
         results = getAudioFeatures(token, song_id)
+        return results
+    
+@ns_get_song_id.route("/")
+class getSongInfoId(Resource):
+    @ns_get_song_id.expect(get_audio_features_expect)
+    def post(self):
+        song_id = request.json["Song_id"]
+        results = get_song_info_id(token, song_id)
         return results

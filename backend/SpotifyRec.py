@@ -8,6 +8,7 @@ import matplotlib as plt
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics.pairwise import cosine_similarity
+import json
 
 load_dotenv("ml/.env")
 client_id = os.getenv("CLIENT_ID")
@@ -153,9 +154,12 @@ def recommendSongs(token, track_name, num_recommended):
     similar_song_indices = scores.argsort()[0][::-1][1:num_recommended + 1]
 
     # Get the names of the most similar songs based on content-based filtering
-    content_based_recommendations = scaled_df.iloc[similar_song_indices][["name", "artists"]]
+    content_based_recommendations = scaled_df.iloc[similar_song_indices][["name", "artists", "id"]]
 
-    return (content_based_recommendations.to_json())
+    final_result = json.loads(content_based_recommendations.to_json())
+
+
+    return final_result
 
 #generate playlist given another playlist
 def generate_playlist(token, playlist_id):
@@ -176,3 +180,10 @@ def generate_playlist(token, playlist_id):
         list_recommended_songs.append(recommendSongs(token, current_song_df.iloc[0]["name"], 1))
 
     return str(list_recommended_songs)
+
+def get_song_info_id(token, song_id):
+    url = "https://api.spotify.com/v1/tracks/{}".format(song_id)
+    headers = get_auth_header(token)
+    result = get(url , headers=headers)
+    json_result = json.loads(result.content)
+    return json_result
