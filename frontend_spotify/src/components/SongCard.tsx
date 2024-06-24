@@ -8,20 +8,19 @@ interface SongInfo {
   name: string;
   image: string;
   link: string;
+  artists: string;
 }
 
 function SongCard(songDict: SongInfo) {
   return (
-    <div className="col">
-      <div className="card" style={{ width: 288 }}>
-        <img src={songDict.image} className="card-img-top" alt="..."></img>
-        <div className="card-body">
-          <h5 className="card-title">{songDict.name}</h5>
-          <p className="card-text">Artists: To Do</p>
-          <a href={songDict.link} className="btn btn-success">
-            Listen on Spotify
-          </a>
-        </div>
+    <div className="card" style={{ width: 288 }}>
+      <img src={songDict.image} className="card-img-top" alt="..."></img>
+      <div className="card-body">
+        <h5 className="card-title">{songDict.name}</h5>
+        <p className="card-text">{songDict.artists}</p>
+        <a href={songDict.link} className="btn btn-success">
+          Listen on Spotify
+        </a>
       </div>
     </div>
   );

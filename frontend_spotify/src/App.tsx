@@ -9,7 +9,9 @@ function App() {
   return (
     <div>
       <Navbar />
-      <Main />
+      <body>
+        <Main />
+      </body>
     </div>
   );
 }
