@@ -4,7 +4,10 @@ import { Fragment } from "react";
 function Navbar() {
   return (
     <Fragment>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      <nav
+        className="navbar navbar-expand-lg bg-body-tertiary"
+        data-bs-theme="dark"
+      >
         <div className="container-fluid">
           <div className="Container">
             <a className="navbar-brand" href="/">

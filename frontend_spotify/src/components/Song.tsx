@@ -69,57 +69,6 @@ function Song() {
       });
     });
   };
-  // return (
-  //   <div className="container mt-5">
-  //     <div
-  //       className="row position-absolute start-50  translate-middle"
-  //       style={{ marginTop: "7%" }}
-  //     >
-  //       <form>
-  //         <div className="mb-3">
-  //           <label htmlFor="songName" className="form-label">
-  //             Song
-  //           </label>
-  //           <input
-  //             type="search"
-  //             className="form-control"
-  //             id="songName"
-  //             aria-describedby="songSearch"
-  //             placeholder="Search for song..."
-  //             value={songName}
-  //             onChange={(e) => setSongName(e.target.value)}
-  //           ></input>
-  //         </div>
-  //         <div className="mb-3">
-  //           <label htmlFor="numRecommendations" className="form-label">
-  //             Recommendations
-  //           </label>
-  //           <input
-  //             type="number"
-  //             className="form-control"
-  //             id="numRecommendations"
-  //             placeholder="# of Suggestions"
-  //             value={numRecommendations}
-  //             onChange={(e) => setNumRecommendations(e.target.value)}
-  //           ></input>
-  //         </div>
-  //         <button
-  //           type="button"
-  //           id="submitButton"
-  //           className="btn btn-primary"
-  //           onClick={() => fetchSongData(songName, numRecommendations)}
-  //         >
-  //           Submit
-  //         </button>
-  //       </form>
-  //     </div>
-  //     <div className=" row justify-content-center mt-7">
-  //       <div className=" gap-5 top-100 start-50 position-absolute translate-middle d-flex flex-wrap">
-  //         {songCards}
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
